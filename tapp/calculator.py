@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import PySide2.QtWidgets as widgets
 from PySide2.QtCore import Slot
@@ -10,11 +10,13 @@ class TriangleAreaCalculator(widgets.QWidget):
     def __init__(self) -> None:
         super().__init__(parent=None)
 
+        self.side_selectors: List[widgets.QDoubleSpinBox] = []
+        self.recalculate_button: Optional[widgets.QPushButton] = None
+
         self.init_ui()
 
     def init_ui(self) -> None:
         vbox_layout = widgets.QVBoxLayout()
-        self.side_selectors: List[widgets.QDoubleSpinBox] = []
         for i in range(3):
             hbox_layout = widgets.QHBoxLayout()
             label = widgets.QLabel(f"Enter {i} side of triangle:")
