@@ -1,0 +1,9 @@
+site_name: Triangle calculator application docs
+
+plugins:
+  - search
+  - mkdocstrings
+
+nav:
+  - "Calculator": calculator.md
+  - "Triangle": triangle.md
