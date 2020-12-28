@@ -5,5 +5,5 @@ plugins:
   - mkdocstrings
 
 nav:
-  - "Calculator": calculator.md
-  - "Triangle": triangle.md
+  - "Calculators": calculators.md
+  - "Geometry": geometry.md
