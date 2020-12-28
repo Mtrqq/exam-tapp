@@ -4,8 +4,8 @@ import traceback
 import PySide2.QtWidgets as widgets
 from PySide2.QtCore import Slot
 
-from tapp.geometry.triangle import Triangle, Vector2D
-
+from tapp.geometry.segment import Segment
+from tapp.geometry.vector import Vector2D
 
 CoordinateSelector = widgets.QDoubleSpinBox
 PointSelector = Tuple[CoordinateSelector, CoordinateSelector]
@@ -16,7 +16,7 @@ def _get_point(selector: PointSelector) -> Vector2D:
     return Vector2D(*coords)
 
 
-class TriangleAreaCalculator(widgets.QWidget):
+class SegmentLengthCalculator(widgets.QWidget):
     def __init__(self, parent: Optional[widgets.QWidget] = None) -> None:
         super().__init__(parent=parent)
 
@@ -27,9 +27,9 @@ class TriangleAreaCalculator(widgets.QWidget):
 
     def init_ui(self) -> None:
         vbox_layout = widgets.QVBoxLayout()
-        for i in range(3):
+        for i in range(2):
             hbox_layout = widgets.QHBoxLayout()
-            label = widgets.QLabel(f"Enter {i} vertex of triangle:")
+            label = widgets.QLabel(f"Enter {i} vertex of segment:")
             x_selector = widgets.QDoubleSpinBox()
             y_selector = widgets.QDoubleSpinBox()
             hbox_layout.addWidget(label)
@@ -48,14 +48,14 @@ class TriangleAreaCalculator(widgets.QWidget):
     def recalculate(self) -> None:
         points = (_get_point(selector) for selector in self.point_selectors)
         try:
-            triangle = Triangle(*points)
+            segment = Segment(*points)
         except ValueError as error:
             traceback.print_exc()
-            widgets.QMessageBox.critical(None, "Error", "Triangle has invalid sides")
+            widgets.QMessageBox.critical(None, "Error", "Segment has invalid vertices")
         except Exception as error:
             traceback.print_exc()
             widgets.QMessageBox.critical(None, "Error", "Unexpected error")
         else:
             widgets.QMessageBox.information(
-                None, "Information", f"Triangle area = {triangle.area}"
+                None, "Information", f"Segment length = {segment.length}"
             )
