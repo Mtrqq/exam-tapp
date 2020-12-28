@@ -1,16 +1,26 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
+import traceback
 
 import PySide2.QtWidgets as widgets
 from PySide2.QtCore import Slot
 
-from tapp.triangle import Triangle
+from tapp.geometry.triangle import Triangle, Vector2D
+
+
+CoordinateSelector = widgets.QDoubleSpinBox
+PointSelector = Tuple[CoordinateSelector, CoordinateSelector]
+
+
+def _get_point(selector: PointSelector) -> Vector2D:
+    coords = (coord.value() for coord in selector)
+    return Vector2D(*coords)
 
 
 class TriangleAreaCalculator(widgets.QWidget):
     def __init__(self) -> None:
         super().__init__(parent=None)
 
-        self.side_selectors: List[widgets.QDoubleSpinBox] = []
+        self.point_selectors: List[PointSelector] = []
         self.recalculate_button: Optional[widgets.QPushButton] = None
 
         self.init_ui()
@@ -19,12 +29,14 @@ class TriangleAreaCalculator(widgets.QWidget):
         vbox_layout = widgets.QVBoxLayout()
         for i in range(3):
             hbox_layout = widgets.QHBoxLayout()
-            label = widgets.QLabel(f"Enter {i} side of triangle:")
-            side_selection = widgets.QDoubleSpinBox()
+            label = widgets.QLabel(f"Enter {i} vertex of triangle:")
+            x_selector = widgets.QDoubleSpinBox()
+            y_selector = widgets.QDoubleSpinBox()
             hbox_layout.addWidget(label)
-            hbox_layout.addWidget(side_selection)
+            hbox_layout.addWidget(x_selector)
+            hbox_layout.addWidget(y_selector)
             vbox_layout.addLayout(hbox_layout)
-            self.side_selectors.append(side_selection)
+            self.point_selectors.append((x_selector, y_selector))
 
         self.recalculate_button = widgets.QPushButton("Recalculate")
         self.recalculate_button.clicked.connect(self.recalculate)
@@ -34,12 +46,14 @@ class TriangleAreaCalculator(widgets.QWidget):
 
     @Slot()
     def recalculate(self) -> None:
-        values = (selector.value() for selector in self.side_selectors)
+        points = (_get_point(selector) for selector in self.point_selectors)
         try:
-            triangle = Triangle(*values)
-        except ValueError:
+            triangle = Triangle(*points)
+        except ValueError as error:
+            traceback.print_exc()
             widgets.QMessageBox.critical(None, "Error", "Triangle has invalid sides")
-        except Exception:
+        except Exception as error:
+            traceback.print_exc()
             widgets.QMessageBox.critical(None, "Error", "Unexpected error")
         else:
             widgets.QMessageBox.information(

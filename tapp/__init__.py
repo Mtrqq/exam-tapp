@@ -1,4 +1,5 @@
-__all__ = ["TriangleAreaCalculator", "Triangle"]
+__all__ = ["Triangle", "Segment", "Vector2D"]
 
-from tapp.calculator import TriangleAreaCalculator
-from tapp.triangle import Triangle
+from tapp.geometry.triangle import Triangle
+from tapp.geometry.segment import Segment
+from tapp.geometry.vector import Vector2D

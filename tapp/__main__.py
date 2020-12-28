@@ -3,7 +3,7 @@ import sys
 from PySide2.QtWidgets import QApplication
 from qt_material import apply_stylesheet
 
-from tapp.calculator import TriangleAreaCalculator
+from tapp.calculators import TriangleAreaCalculator
 
 
 def run():
